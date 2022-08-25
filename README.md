@@ -1,2 +1,3 @@
-# hashcat-aws
-hashcat on AWS
+# hashcat-cloud
+hashcat on cloud
+

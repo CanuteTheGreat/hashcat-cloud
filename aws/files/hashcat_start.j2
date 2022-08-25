@@ -1,0 +1,25 @@
+#!/bin/bash
+
+HASHCAT=/usr/local/hashcat/hashcat.bin
+WORDLIST=/mnt/wordlists/rockyou.txt
+RULES=/usr/local/hashcat/rules/best64.rule
+HANDSHAKES=/mnt/hs/
+TMP=/tmp/
+HOST=`/bin/hostname`
+
+# Download hashcat
+cd $TMP
+curl -s https://api.github.com/repos/hashcat/hashcat/releases/latest | jq '.assets[] | select(.name|match(".7z$")) | .browser_download_url' | sed 's/"/ /' | sed 's/"/ /' | wget -i -
+7zr x hashcat*.7z
+rm -f hashcat*.7z
+mv -f /tmp/hashcat* /usr/local/hashcat
+
+$HASHCAT -I >> $HANDSHAKES/hashcat-info-$HOST.log
+
+for hash in `ls -1 $HANDSHAKES/*.22000`
+do 
+	$HASHCAT -o $hash.cracked -a 0 -m 22000 $hash $WORDLIST -r $RULES
+done
+
+# shutdown instance so it can self-terminate
+shutdown -h now
