@@ -129,6 +129,5 @@ dmypy.json
 .pyre/
 
 # secrets
-hosts
 hashcatkeys.pem
 *.mine
